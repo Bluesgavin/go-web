@@ -21,6 +21,10 @@ func deleteBook(c *server.Context) {
 	c.Respond("DELETE A BOOK!")
 }
 
+func  anyBook(c *server.Context){
+	c.Respond("any route!")
+}
+
 func main() {
 	server := server.NewServer(server.MetricFilterBuilder)
 	// 主页
@@ -33,6 +37,8 @@ func main() {
 	server.Route("GET", "/book/delete", deleteBook)
 	// 更新图书
 	server.Route("GET", "/book/update", updateBook)
+
+	server.Route("GET", "/book/*", anyBook)
 
 	if err := server.Start(":8081"); err != nil {
 		panic(err)

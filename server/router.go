@@ -3,6 +3,7 @@ package server
 import (
 	"errors"
 	"strings"
+	"sort"
 )
 
 type Router interface {
@@ -92,9 +93,10 @@ func (r *WebRouter) findMatchChild(node *Node, path string, c *Context) (*Node, 
 		return nil, false
 	}
 
-	// sort.Slice(candidates, func(i, j int) bool {
-	// 	return candidates[i].nodeType < candidates[j].nodeType
-	// })
+	/** sort the candidates by nodeType **/
+	sort.Slice(candidates, func(i, j int) bool {
+		return candidates[i].nodeType < candidates[j].nodeType
+	})
 	return candidates[len(candidates)-1], true
 }
 
