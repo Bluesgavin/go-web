@@ -21,26 +21,29 @@ func deleteBook(c *server.Context) {
 	c.Respond("DELETE A BOOK!")
 }
 
-func  anyBook(c *server.Context){
+func anyBook(c *server.Context) {
 	c.Respond("any route!")
 }
 
 func main() {
-	server := server.NewServer(server.MetricFilterBuilder)
+	s := server.NewServer(server.MetricFilterBuilder)
 	// 主页
-	server.Route("GET", "/", home)
+	s.Route("GET", "/", home)
 	// 新增图书
-	server.Route("GET", "/book/add", addBook)
+	s.Route("GET", "/book/add", addBook)
 	// 查找图书
-	server.Route("GET", "/book/get", getBook)
+	s.Route("GET", "/book/get", getBook)
 	// 删除图书
-	server.Route("GET", "/book/delete", deleteBook)
+	s.Route("GET", "/book/delete", deleteBook)
 	// 更新图书
-	server.Route("GET", "/book/update", updateBook)
+	s.Route("GET", "/book/update", updateBook)
 
-	server.Route("GET", "/book/*", anyBook)
+	s.Route("GET", "/book/*", anyBook)
 
-	if err := server.Start(":8081"); err != nil {
+	staticRoute := server.NewStaticHandler("public", "/public", server.WithMoreExtension(map[string]string{"mp3": "audio/mp3"}), server.WithFileCache(1<<20, 100))
+	s.Route("GET", "/public/*", staticRoute.Handle)
+
+	if err := s.Start(":8081"); err != nil {
 		panic(err)
 	}
 	fmt.Println("server started!")
